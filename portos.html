@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ariel Kristian Gultom | Information Systems Visionary</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Kombinasi Font: Syne (Artistic/Bold), Inter (Clean UI), JetBrains Mono (Code/Data) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Syne', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        bg: '#050505',
+                        surface: '#0F0F0F',
+                        gold: '#EBB305',
+                        goldDim: '#9F7D15',
+                        subtle: '#333333',
+                    },
+                    backgroundImage: {
+                        'gold-gradient': 'linear-gradient(135deg, #EBB305 0%, #F5D061 50%, #9F7D15 100%)',
+                        'glass': 'linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%)',
+                    },
+                    animation: {
+                        'float': 'float 8s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'marquee': 'marquee 25s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        marquee: {
+                            '0%': { transform: 'translateX(0%)' },
+                            '100%': { transform: 'translateX(-100%)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* --- CORE --- */
+        body {
+            background-color: #050505;
+            color: #e5e5e5;
+            overflow-x: hidden;
+            cursor: none; /* Custom cursor required */
+        }
+
+        /* --- PRELOADER --- */
+        #preloader {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: transform 0.8s cubic-bezier(0.76, 0, 0.24, 1);
+        }
+        .counter {
+            font-family: 'Syne', sans-serif;
+            font-size: 8rem;
+            font-weight: 800;
+            color: #EBB305;
+            line-height: 1;
+        }
+        .loading-bar {
+            width: 200px;
+            height: 2px;
+            background: #222;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .loading-progress {
+            position: absolute;
+            top: 0; left: 0;
+            height: 100%;
+            background: #EBB305;
+            width: 0%;
+            transition: width 0.2s;
+        }
+
+        /* --- CANVAS BACKGROUND --- */
+        #canvas-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* --- CUSTOM CURSOR --- */
+        .cursor-dot {
+            width: 8px; height: 8px;
+            background: #EBB305;
+            position: fixed;
+            top: 0; left: 0;
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+        }
+        .cursor-outline {
+            width: 40px; height: 40px;
+            border: 1px solid rgba(235, 179, 5, 0.3);
+            position: fixed;
+            top: 0; left: 0;
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background 0.2s;
+        }
+        
+        /* Magnetic Hover Effect */
+        body:has(.magnetic-wrap:hover) .cursor-outline {
+            width: 60px; height: 60px;
+            background: rgba(235, 179, 5, 0.1);
+            border-color: #EBB305;
+        }
+
+        /* --- TYPOGRAPHY --- */
+        .text-gradient {
+            background: linear-gradient(to right, #fff, #EBB305);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .outline-text {
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.15);
+            color: transparent;
+            transition: all 0.5s ease;
+        }
+        .outline-text:hover {
+            color: rgba(235, 179, 5, 0.1);
+            -webkit-text-stroke: 1px #EBB305;
+        }
+
+        /* --- COMPONENTS --- */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.5s ease;
+        }
+        .glass-panel:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(235, 179, 5, 0.3);
+            box-shadow: 0 0 30px rgba(235, 179, 5, 0.05);
+        }
+
+        /* Bento Grid Layout Utility */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 1.5rem;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #EBB305; }
+
+        @media (max-width: 768px) {
+            .cursor-dot, .cursor-outline { display: none; }
+            body { cursor: auto; }
+            .counter { font-size: 4rem; }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- PRELOADER -->
+    <div id="preloader">
+        <div class="counter">0%</div>
+        <div class="loading-bar">
+            <div class="loading-progress"></div>
+        </div>
+        <div class="font-mono text-xs text-gray-500 mt-4 tracking-widest uppercase">Initializing System</div>
+    </div>
+
+    <!-- CANVAS BACKGROUND (Particle Network) -->
+    <canvas id="canvas-bg"></canvas>
+
+    <!-- CURSOR -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <!-- NAVBAR (Smart Hide/Show) -->
+    <nav id="main-nav" class="fixed w-full z-50 px-6 py-6 transition-all duration-300 transform translate-y-0 mix-blend-difference text-white">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="#home" class="magnetic-wrap relative px-2 py-1">
+                <span class="text-xl font-display font-bold tracking-tighter">AR<span class="text-gold">.</span>GULTOM</span>
+            </a>
+            
+            <div class="hidden md:flex space-x-12 items-center">
+                <a href="#home" class="magnetic-wrap font-mono text-xs hover:text-gold transition-colors tracking-widest">/ HOME</a>
+                <a href="#about" class="magnetic-wrap font-mono text-xs hover:text-gold transition-colors tracking-widest">/ ABOUT</a>
+                <a href="#services" class="magnetic-wrap font-mono text-xs hover:text-gold transition-colors tracking-widest">/ SERVICES</a>
+                <a href="#skills" class="magnetic-wrap font-mono text-xs hover:text-gold transition-colors tracking-widest">/ SKILLS</a>
+                <a href="#projects" class="magnetic-wrap font-mono text-xs hover:text-gold transition-colors tracking-widest">/ WORKS</a>
+            </div>
+
+            <a href="#contact" class="magnetic-wrap hidden md:flex items-center gap-2 group">
+                <span class="font-mono text-xs group-hover:text-gold transition-colors">START A PROJECT</span>
+                <div class="w-2 h-2 bg-gold rounded-full animate-pulse"></div>
+            </a>
+
+            <button id="menu-btn" class="md:hidden text-2xl magnetic-wrap">
+                <i class="fas fa-bars-staggered"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- MOBILE MENU -->
+    <div id="mobile-menu" class="fixed inset-0 z-40 bg-black flex flex-col justify-center items-center opacity-0 pointer-events-none transition-all duration-500 transform translate-y-10">
+        <div class="flex flex-col space-y-8 text-center">
+            <a href="#home" class="mobile-link text-4xl font-display font-bold outline-text hover:text-white">HOME</a>
+            <a href="#about" class="mobile-link text-4xl font-display font-bold outline-text hover:text-white">ABOUT</a>
+            <a href="#services" class="mobile-link text-4xl font-display font-bold outline-text hover:text-white">SERVICES</a>
+            <a href="#projects" class="mobile-link text-4xl font-display font-bold outline-text hover:text-white">WORKS</a>
+            <a href="#contact" class="mobile-link text-4xl font-display font-bold text-gold">CONTACT</a>
+        </div>
+        <button id="close-menu" class="absolute top-8 right-8 text-3xl text-white">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <!-- HERO SECTION (BENTO STYLE) -->
+    <section id="home" class="relative min-h-screen pt-32 pb-20 px-6 flex flex-col justify-center">
+        <div class="container mx-auto">
+            
+            <!-- Main Headline -->
+            <div class="mb-12 reveal-item">
+                <h1 class="text-[12vw] md:text-[8rem] font-display font-bold leading-[0.85] tracking-tight">
+                    DATA <span class="text-gray-800 transition duration-700 hover:text-gold cursor-default">&&</span><br>
+                    <span class="text-gradient">DESIGN</span>
+                </h1>
+            </div>
+
+            <!-- Bento Grid Content -->
+            <div class="bento-grid">
+                
+                <!-- Introduction Block -->
+                <div class="col-span-12 md:col-span-5 glass-panel rounded-2xl p-8 md:p-12 flex flex-col justify-between reveal-item delay-100 group">
+                    <div>
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="px-3 py-1 border border-gold/30 rounded-full text-gold font-mono text-[10px] uppercase">Available for work</div>
+                            <div class="h-[1px] flex-grow bg-white/10"></div>
+                        </div>
+                        <p class="text-xl md:text-2xl font-light leading-relaxed text-gray-300">
+                            Saya <span class="text-white font-medium">Ariel Kristian Gultom</span>. Mahasiswa Sistem Informasi yang mengubah data kompleks menjadi pengalaman digital yang memukau.
+                        </p>
+                    </div>
+                    <div class="mt-8">
+                        <a href="#projects" class="magnetic-wrap inline-flex items-center gap-3 text-gold font-mono text-sm group-hover:gap-5 transition-all">
+                            SEE MY WORKS <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Image Block (Avatar) -->
+                <div class="col-span-12 md:col-span-4 glass-panel rounded-2xl p-2 relative overflow-hidden reveal-item delay-200 group">
+                    <div class="absolute inset-0 bg-gold/10 z-10 group-hover:bg-transparent transition-colors duration-500"></div>
+                    <div class="w-full h-full rounded-xl overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-700">
+                        <!-- IMAGE GOES HERE -->
+                        <img src="ariell.jpeg" alt="Ariel Profile" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                    </div>
+                    
+                    <!-- Floating Badge -->
+                    <div class="absolute bottom-4 right-4 z-20 bg-black/50 backdrop-blur-md px-4 py-2 rounded-lg border border-white/10">
+                        <span class="font-mono text-xs text-white">IS STUDENT</span>
+                    </div>
+                </div>
+
+                <!-- Stats / Tech Block -->
+                <div class="col-span-12 md:col-span-3 flex flex-col gap-6">
+                    <div class="glass-panel rounded-2xl p-6 flex-1 reveal-item delay-300 flex items-center justify-center relative overflow-hidden group">
+                        <div class="text-center relative z-10">
+                            <span class="block text-5xl font-display font-bold text-white mb-1 group-hover:text-gold transition-colors">3+</span>
+                            <span class="font-mono text-xs text-gray-500 uppercase">Years Experience</span>
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-gold/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    </div>
+                    
+                    <div class="glass-panel rounded-2xl p-6 flex-1 reveal-item delay-400 flex flex-col justify-center relative overflow-hidden">
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 bg-white/5 border border-white/10 rounded text-[10px] font-mono text-gray-400">PYTHON</span>
+                            <span class="px-3 py-1 bg-white/5 border border-white/10 rounded text-[10px] font-mono text-gray-400">SQL</span>
+                            <span class="px-3 py-1 bg-white/5 border border-white/10 rounded text-[10px] font-mono text-gray-400">REACT</span>
+                            <span class="px-3 py-1 bg-white/5 border border-white/10 rounded text-[10px] font-mono text-gray-400">FIGMA</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SCROLL TEXT MARQUEE -->
+    <div class="py-12 border-y border-white/5 bg-black/40 backdrop-blur-sm relative overflow-hidden">
+        <div class="flex whitespace-nowrap animate-marquee">
+            <span class="text-6xl md:text-8xl font-display font-bold outline-text mx-6">SYSTEM ANALYSIS</span>
+            <span class="text-6xl md:text-8xl font-display font-bold text-gold mx-6">/</span>
+            <span class="text-6xl md:text-8xl font-display font-bold outline-text mx-6">DATABASE DESIGN</span>
+            <span class="text-6xl md:text-8xl font-display font-bold text-gold mx-6">/</span>
+            <span class="text-6xl md:text-8xl font-display font-bold outline-text mx-6">WEB DEVELOPMENT</span>
+            <span class="text-6xl md:text-8xl font-display font-bold text-gold mx-6">/</span>
+             <!-- Duplicate for seamless loop -->
+            <span class="text-6xl md:text-8xl font-display font-bold outline-text mx-6">SYSTEM ANALYSIS</span>
+            <span class="text-6xl md:text-8xl font-display font-bold text-gold mx-6">/</span>
+            <span class="text-6xl md:text-8xl font-display font-bold outline-text mx-6">DATABASE DESIGN</span>
+            <span class="text-6xl md:text-8xl font-display font-bold text-gold mx-6">/</span>
+            <span class="text-6xl md:text-8xl font-display font-bold outline-text mx-6">WEB DEVELOPMENT</span>
+            <span class="text-6xl md:text-8xl font-display font-bold text-gold mx-6">/</span>
+        </div>
+    </div>
+
+    <!-- ABOUT SECTION (EXPANDED) -->
+    <section id="about" class="py-32 px-6 relative bg-gradient-to-b from-[#050505] to-[#0a0a0a]">
+        <div class="container mx-auto max-w-5xl">
+            <div class="glass-panel p-10 md:p-16 border-l-4 border-gold relative overflow-hidden reveal-item">
+                <div class="absolute -right-20 -top-20 text-[200px] font-display font-bold text-white/5 select-none pointer-events-none">01</div>
+                
+                <h2 class="text-3xl md:text-5xl font-display font-bold mb-8">BEYOND <span class="text-gold">THE CODE</span></h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <div class="space-y-6 text-gray-400 leading-relaxed font-light text-lg">
+                        <p>
+                            Sebagai mahasiswa Sistem Informasi, saya tidak hanya melihat baris kode. Saya melihat <strong class="text-white">alur, efisiensi, dan solusi</strong>. Di dunia yang dibanjiri data, kemampuan untuk mengekstrak makna adalah kekuatan super baru.
+                        </p>
+                        <p>
+                            Misi saya sederhana: Membangun sistem digital yang tidak hanya berfungsi, tetapi juga <strong class="text-white">menginspirasi dan meningkatkan</strong> cara manusia bekerja.
+                        </p>
+                    </div>
+                    <div class="flex flex-col gap-6 justify-center">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center text-gold border border-gold/20">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white">Analytical Thinking</h4>
+                                <p class="text-xs text-gray-500">Data-driven decision making</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center text-gold border border-gold/20">
+                                <i class="fas fa-layer-group"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white">Full-Stack Capability</h4>
+                                <p class="text-xs text-gray-500">From backend logic to frontend beauty</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SERVICES SECTION (ADDED BACK) -->
+    <section id="services" class="py-20 px-6 relative">
+        <div class="container mx-auto">
+            <div class="text-center mb-16 reveal-item">
+                <span class="text-gold font-mono text-xs tracking-widest uppercase">What I Offer</span>
+                <h2 class="text-4xl md:text-6xl font-display font-bold mt-2">SERVICES</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Service 1 -->
+                <div class="group relative p-8 glass-panel rounded-xl hover:border-gold/50 transition-all duration-500 reveal-item">
+                    <div class="absolute inset-0 bg-gradient-to-br from-gold/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <i class="fas fa-laptop-code text-4xl mb-6 text-gray-400 group-hover:text-gold transition-colors"></i>
+                    <h3 class="text-2xl font-bold mb-4 font-display">Web Development</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">Membangun website responsif dan aplikasi web berkinerja tinggi menggunakan teknologi modern seperti React dan Tailwind.</p>
+                </div>
+                <!-- Service 2 -->
+                <div class="group relative p-8 glass-panel rounded-xl hover:border-gold/50 transition-all duration-500 reveal-item delay-100">
+                     <div class="absolute inset-0 bg-gradient-to-br from-gold/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <i class="fas fa-chart-pie text-4xl mb-6 text-gray-400 group-hover:text-gold transition-colors"></i>
+                    <h3 class="text-2xl font-bold mb-4 font-display">Data Analytics</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">Mengolah data mentah menjadi visualisasi interaktif dan insight bisnis yang dapat ditindaklanjuti.</p>
+                </div>
+                <!-- Service 3 -->
+                <div class="group relative p-8 glass-panel rounded-xl hover:border-gold/50 transition-all duration-500 reveal-item delay-200">
+                     <div class="absolute inset-0 bg-gradient-to-br from-gold/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <i class="fas fa-sitemap text-4xl mb-6 text-gray-400 group-hover:text-gold transition-colors"></i>
+                    <h3 class="text-2xl font-bold mb-4 font-display">System Design</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">Merancang arsitektur sistem informasi yang skalabel, efisien, dan sesuai dengan kebutuhan operasional.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SKILLS SECTION (Interactive Grid) -->
+    <section id="skills" class="py-32 px-6">
+        <div class="container mx-auto">
+            <div class="flex justify-between items-end mb-16 reveal-item">
+                <h2 class="text-4xl md:text-6xl font-display font-bold">CORE <br> <span class="text-gold">INTELLIGENCE</span></h2>
+                <p class="hidden md:block text-gray-500 font-mono text-sm max-w-xs text-right">
+                    Kombinasi analisis logis dan kreativitas teknis untuk solusi yang efisien.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Skill Item 1 -->
+                <div class="glass-panel p-8 rounded-xl hover:bg-white/5 transition-colors group reveal-item">
+                    <i class="fab fa-python text-4xl mb-6 text-gray-600 group-hover:text-gold transition-colors"></i>
+                    <h3 class="font-display font-bold text-xl mb-2">Data Science</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">Python, Pandas, NumPy for complex data manipulation.</p>
+                </div>
+                <!-- Skill Item 2 -->
+                <div class="glass-panel p-8 rounded-xl hover:bg-white/5 transition-colors group reveal-item delay-100">
+                    <i class="fas fa-database text-4xl mb-6 text-gray-600 group-hover:text-gold transition-colors"></i>
+                    <h3 class="font-display font-bold text-xl mb-2">Backend Logic</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">SQL Optimization, PostgreSQL, & REST API Architecture.</p>
+                </div>
+                <!-- Skill Item 3 -->
+                <div class="glass-panel p-8 rounded-xl hover:bg-white/5 transition-colors group reveal-item delay-200">
+                    <i class="fas fa-code text-4xl mb-6 text-gray-600 group-hover:text-gold transition-colors"></i>
+                    <h3 class="font-display font-bold text-xl mb-2">Frontend Dev</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">Creating immersive UI with React, Tailwind & Modern JS.</p>
+                </div>
+                <!-- Skill Item 4 -->
+                <div class="glass-panel p-8 rounded-xl hover:bg-white/5 transition-colors group reveal-item delay-300">
+                    <i class="fas fa-sitemap text-4xl mb-6 text-gray-600 group-hover:text-gold transition-colors"></i>
+                    <h3 class="font-display font-bold text-xl mb-2">System Design</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">ERD, BPMN, and UML modeling for scalable applications.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SELECTED WORKS (Horizontal / List Layout) -->
+    <section id="projects" class="py-20 px-6">
+        <div class="container mx-auto">
+            <div class="mb-20 reveal-item">
+                <span class="font-mono text-gold text-xs tracking-widest">SELECTED CASE STUDIES</span>
+            </div>
+
+            <div class="space-y-32">
+                <!-- Project 1 -->
+                <div class="group relative grid grid-cols-1 lg:grid-cols-12 gap-10 items-center reveal-item">
+                    <div class="lg:col-span-7 relative z-10">
+                        <div class="overflow-hidden rounded-2xl relative">
+                            <div class="absolute inset-0 bg-gold/20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20 pointer-events-none"></div>
+                            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80" alt="Project 1" class="w-full transition-transform duration-1000 group-hover:scale-105">
+                        </div>
+                    </div>
+                    <div class="lg:col-span-5 relative z-20 lg:-ml-20">
+                        <div class="glass-panel p-8 md:p-12 rounded-2xl backdrop-blur-xl">
+                            <div class="font-mono text-gold text-xs mb-4">01 — DATA ANALYTICS</div>
+                            <h3 class="text-3xl md:text-4xl font-display font-bold mb-6">Market Predictor v2</h3>
+                            <p class="text-gray-400 leading-relaxed mb-8">
+                                Menggunakan algoritma Machine Learning untuk memprediksi tren pasar ritel. Dashboard interaktif memungkinkan pemangku kepentingan melihat proyeksi real-time.
+                            </p>
+                            <div class="flex gap-4 mb-8">
+                                <span class="text-xs font-mono border border-white/10 px-2 py-1 rounded">PYTHON</span>
+                                <span class="text-xs font-mono border border-white/10 px-2 py-1 rounded">TABLEAU</span>
+                            </div>
+                            <a href="#" class="magnetic-wrap inline-block border-b border-gold text-gold pb-1 font-mono text-xs tracking-widest hover:text-white hover:border-white transition-colors">VIEW CASE STUDY</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="group relative grid grid-cols-1 lg:grid-cols-12 gap-10 items-center reveal-item">
+                    <div class="lg:col-span-5 order-2 lg:order-1 relative z-20 lg:-mr-20">
+                        <div class="glass-panel p-8 md:p-12 rounded-2xl backdrop-blur-xl">
+                            <div class="font-mono text-gold text-xs mb-4">02 — SYSTEM ERP</div>
+                            <h3 class="text-3xl md:text-4xl font-display font-bold mb-6">Nexus Core ERP</h3>
+                            <p class="text-gray-400 leading-relaxed mb-8">
+                                Arsitektur sistem ERP modular yang mengintegrasikan Supply Chain, Finance, dan HR. Fokus pada pengurangan redundansi data hingga 60%.
+                            </p>
+                            <div class="flex gap-4 mb-8">
+                                <span class="text-xs font-mono border border-white/10 px-2 py-1 rounded">REACT</span>
+                                <span class="text-xs font-mono border border-white/10 px-2 py-1 rounded">NODE.JS</span>
+                            </div>
+                            <a href="#" class="magnetic-wrap inline-block border-b border-gold text-gold pb-1 font-mono text-xs tracking-widest hover:text-white hover:border-white transition-colors">VIEW CASE STUDY</a>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-7 order-1 lg:order-2 relative z-10">
+                        <div class="overflow-hidden rounded-2xl relative">
+                            <div class="absolute inset-0 bg-gold/20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20 pointer-events-none"></div>
+                            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80" alt="Project 2" class="w-full transition-transform duration-1000 group-hover:scale-105">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER / CONTACT -->
+    <footer id="contact" class="pt-32 pb-10 px-6 relative overflow-hidden">
+        <!-- Background Glow -->
+        <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gold/5 rounded-full blur-[120px] pointer-events-none"></div>
+
+        <div class="container mx-auto relative z-10">
+            <div class="text-center mb-24 reveal-item">
+                <h2 class="text-[10vw] font-display font-bold leading-none mb-8 text-transparent bg-clip-text bg-gradient-to-b from-white to-white/20">
+                    LET'S TALK
+                </h2>
+                <a href="mailto:ariel@student.id" class="magnetic-wrap inline-block px-12 py-5 bg-gold text-black font-bold font-display rounded-full hover:scale-110 transition-transform duration-300 shadow-[0_0_30px_rgba(235,179,5,0.4)]">
+                    ariel@student.id
+                </a>
+            </div>
+
+            <div class="flex flex-col md:flex-row justify-between items-center border-t border-white/10 pt-10">
+                <p class="font-mono text-xs text-gray-500">&copy; 2025 Ariel K. Gultom. All rights reserved.</p>
+                <div class="flex gap-8 mt-4 md:mt-0">
+                    <a href="#" class="magnetic-wrap font-mono text-xs hover:text-gold transition-colors">LINKEDIN</a>
+                    <a href="#" class="magnetic-wrap font-mono text-xs hover:text-gold transition-colors">GITHUB</a>
+                    <a href="#" class="magnetic-wrap font-mono text-xs hover:text-gold transition-colors">INSTAGRAM</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- 1. PRELOADER LOGIC ---
+        const preloader = document.getElementById('preloader');
+        const counter = document.querySelector('.counter');
+        const progress = document.querySelector('.loading-progress');
+        
+        let count = 0;
+        const updateCounter = () => {
+            count += Math.floor(Math.random() * 5) + 1;
+            if (count > 100) count = 100;
+            
+            counter.innerText = count + '%';
+            progress.style.width = count + '%';
+
+            if (count < 100) {
+                requestAnimationFrame(updateCounter);
+            } else {
+                setTimeout(() => {
+                    preloader.style.transform = 'translateY(-100%)';
+                }, 500);
+            }
+        };
+        requestAnimationFrame(updateCounter);
+
+
+        // --- 2. PARTICLE NETWORK BACKGROUND (CANVAS) ---
+        const canvas = document.getElementById('canvas-bg');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        
+        // Resize Canvas
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // Mouse interaction
+        const mouse = { x: null, y: null };
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.x;
+            mouse.y = e.y;
+        });
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 2 + 1;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                
+                // Bounce off edges
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+
+                // Mouse Repel/Attract (Subtle)
+                if (mouse.x) {
+                    const dx = mouse.x - this.x;
+                    const dy = mouse.y - this.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < 100) {
+                        this.x -= dx * 0.01;
+                        this.y -= dy * 0.01;
+                    }
+                }
+            }
+            draw() {
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            const numParticles = Math.min(window.innerWidth / 10, 100); // Responsive count
+            for (let i = 0; i < numParticles; i++) {
+                particles.push(new Particle());
+            }
+        }
+        initParticles();
+
+        function animateCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+                
+                // Draw Connections
+                for (let j = i; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx*dx + dy*dy);
+                    
+                    if (distance < 150) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(235, 179, 5, ${0.1 - distance/1500})`; // Gold connections
+                        ctx.lineWidth = 1;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animateCanvas);
+        }
+        animateCanvas();
+
+
+        // --- 3. CUSTOM CURSOR & MAGNETIC EFFECT ---
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorOutline = document.querySelector('.cursor-outline');
+        const magnetics = document.querySelectorAll('.magnetic-wrap');
+
+        window.addEventListener('mousemove', (e) => {
+            const posX = e.clientX;
+            const posY = e.clientY;
+
+            // Dot follows instantly
+            cursorDot.style.left = `${posX}px`;
+            cursorDot.style.top = `${posY}px`;
+
+            // Outline follows smoothly
+            cursorOutline.animate({
+                left: `${posX}px`,
+                top: `${posY}px`
+            }, { duration: 500, fill: "forwards" });
+        });
+
+        // Magnetic Logic
+        magnetics.forEach(btn => {
+            btn.addEventListener('mousemove', (e) => {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                
+                btn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = 'translate(0px, 0px)';
+            });
+        });
+
+
+        // --- 4. SCROLL REVEAL & NAVBAR HIDE/SHOW ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('opacity-100', 'translate-y-0');
+                    entry.target.classList.remove('opacity-0', 'translate-y-10');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        const revealItems = document.querySelectorAll('.reveal-item');
+        revealItems.forEach(item => {
+            item.classList.add('transition-all', 'duration-1000', 'opacity-0', 'translate-y-10');
+            observer.observe(item);
+        });
+
+        // Smart Navbar Logic
+        let lastScrollY = window.scrollY;
+        const navbar = document.getElementById('main-nav');
+        
+        window.addEventListener('scroll', () => {
+            const currentScrollY = window.scrollY;
+            
+            // Hide on scroll down, Show on scroll up
+            if (currentScrollY > lastScrollY && currentScrollY > 50) {
+                navbar.classList.add('-translate-y-full');
+            } else {
+                navbar.classList.remove('-translate-y-full');
+            }
+            
+            // Solid background logic
+            if (currentScrollY > 50) {
+                navbar.classList.add('bg-black/90', 'backdrop-blur-md', 'border-b', 'border-white/10');
+                navbar.classList.remove('mix-blend-difference', 'py-6');
+                navbar.classList.add('py-4');
+            } else {
+                navbar.classList.remove('bg-black/90', 'backdrop-blur-md', 'border-b', 'border-white/10', 'py-4');
+                navbar.classList.add('mix-blend-difference', 'py-6');
+            }
+            
+            lastScrollY = currentScrollY;
+        });
+
+
+        // --- 5. MOBILE MENU ---
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const closeMenu = document.getElementById('close-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-10');
+        });
+
+        const hideMenu = () => {
+            mobileMenu.classList.add('opacity-0', 'pointer-events-none', 'translate-y-10');
+        };
+
+        closeMenu.addEventListener('click', hideMenu);
+        mobileLinks.forEach(link => link.addEventListener('click', hideMenu));
+
+    </script>
+</body>
+</html>
